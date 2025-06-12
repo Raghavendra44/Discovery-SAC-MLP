@@ -1,15 +1,16 @@
 import os
 import re
-from ase.io import read
+from ase.io import read, write
 from ase.build import add_adsorbate
 
 # Define paths
 slab_dir = "/kaggle/input/discovery-slabs/SLABS"
-output_dir = "SLABS_WITH_ADSORBATE"
+output_dir = "SLAB_WITH_ADSORbATES_XYZ"
 os.makedirs(output_dir, exist_ok=True)
 
 # Load adsorbates
 is_adsorbate = read('/kaggle/input/discovery-slabs/CO2_IS_POSCAR')
+is_adsorbate.positions[[1,2]]= is_adsorbate.positions[[2,1]]
 fs_adsorbate = read('/kaggle/input/discovery-slabs/CO2_FS_POSCAR')
 fs_adsorbate.rotate(90, 'z', rotate_cell=False)
 
@@ -41,9 +42,7 @@ def process_slab(slab_path):
         center_position = (a / 2, b / 2)
 
         # Use default offset (0, 0), override if Cu211 and known dopant
-        offset = (0, 0)
-        if surface_type == "Cu211":
-            offset = cu211_offsets.get(dopant_site, (0, 0))
+        offset = cu211_offsets.get(dopant_site, (0, 0)) if surface_type == "Cu211" else (0, 0)
 
         def create_slab(adsorbate):
             new_slab = slab.copy()
@@ -66,8 +65,8 @@ for filename in sorted(os.listdir(slab_dir)):
     if filename.endswith(".POSCAR"):
         result = process_slab(os.path.join(slab_dir, filename))
         if result:
-            result['initial'].write(f"{output_dir}/initial_{result['base_name']}.traj")
-            result['final'].write(f"{output_dir}/final_{result['base_name']}.traj")
+            write(f"{output_dir}/initial_{result['base_name']}.extxyz", result['initial'], format='extxyz')
+            write(f"{output_dir}/final_{result['base_name']}.extxyz", result['final'], format='extxyz')
             print(f"Generated: {result['base_name']}")
 
 print(f"\nSuccessfully processed {len(os.listdir(output_dir)) // 2} slabs in {output_dir}/")
