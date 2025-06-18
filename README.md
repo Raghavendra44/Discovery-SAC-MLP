@@ -3,7 +3,7 @@ Facets: 100, 110, 111, 211. Surfaces of all miller indices other than 211 are 4 
 -slabs_sanity_check.py allows one to check if slabs in a folder have exactly one dopant each, and if the number of fixed atoms in slabs of a given Miller index
 are consistent.
 -copy_of_lp_and_supercells(2).py is a .py version of the colab notebook used to compute teh lattice parameters and get relaxed supercells using UMA models.
--UMA_SLABS contains slab POSCARS ready-to-use for NEB calcs, with names in the formate Cu_{miller index}_{dopant atomic number}_{site number}.POSCAR
+-UMA_SLABS contains slab POSCARS ready-to-use for NEB calcs, with names in the formate Cu_{miller index}_ {dopant atomic number} _{site number}.POSCAR (no spaces)
 
 -create_surface_with_adsorbate.py
 
